@@ -1,13 +1,13 @@
 export default `
     type Query {
-        books: [Book]
-        book(id: ID!): Book
+        books: [Book!]!
+        book(title: String!): Book!
     }
     
     type Mutation {
-        createBook(input: BookMutation): Book
-        updateBook(input: BookMutation): Book
-        deleteBook: String
+        createBook(input: BookMutation): Book!
+        updateBook(title: String!, input: BookMutation): Book!
+        deleteBook(title: String!): Book!
     }
     
     type Subscription {
@@ -17,8 +17,8 @@ export default `
     type Book {
         id: ID!
         title: String!
-        published: Int!
-        author: Author!
+        published: Int
+        author: Author
         genres: [String!]!
     }
     

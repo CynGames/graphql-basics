@@ -5,21 +5,20 @@ export default class BookRepository {
         return BookModel.find({});
     }
 
-    async getBook(id: string): Promise<BookDocument | null> {
-        return BookModel.findById(id);
+    async getBook(title: string): Promise<BookDocument | null> {
+        return BookModel.findOne({title});
     }
 
-    async insertBook(bookData: BookDocument): Promise<BookDocument> {
-        const author = new BookModel(bookData);
-        return await author.save();
+    async createBook(bookData: BookDocument): Promise<BookDocument> {
+        const book = new BookModel(bookData);
+        return await book.save();
     }
 
-    async updateBook(bookData: BookDocument): Promise<BookDocument | null> {
-        return BookModel.findByIdAndUpdate(bookData._id, bookData, {new: true});
+    async updateBook(title: string, bookData: BookDocument): Promise<BookDocument | null> {
+        return BookModel.findOneAndUpdate({title}, bookData, {new: true});
     }
 
-    async deleteBook(id: string): Promise<string> {
-        await BookModel.findByIdAndDelete(id);
-        return id;
+    async deleteBook(title: string): Promise<BookDocument | null> {
+        return BookModel.findOneAndDelete({title});
     }
 }

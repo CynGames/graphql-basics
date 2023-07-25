@@ -1,12 +1,11 @@
 import mongoose, {Document, Schema} from 'mongoose';
-import {AuthorDocument} from "../author";
 
 const uniqueValidator = require('mongoose-unique-validator');
 
 export interface BookDocument extends Document {
   _id: string;
   title: string;
-  author?: AuthorDocument;
+  author?: string;
   genres?: string[];
   published?: number;
 }
@@ -22,8 +21,7 @@ const BookModel = new Schema<BookDocument>({
     type: Number,
   },
   author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Author'
+    type: String,
   },
   genres: [
     {type: String}

@@ -1,7 +1,7 @@
 export default `
     type Query {
         authors: [Author]
-        author(id: ID!): Author
+        author(name: String!): Author
     }
     
     type Mutation {
@@ -23,6 +23,6 @@ export default `
     input AuthorMutation {
         id: ID
         name: String!
-        dateOfBirth: Int
+        dateOfBirth: Int!
     }
 `;

@@ -7,11 +7,18 @@
     "outDir": "./dist",
     "strict": true,
     "moduleResolution": "node",
+    "baseUrl": "./",
+    "paths": {
+      "*": ["src/*", "node_modules/*"]
+    },
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true
+  },
+  "watchOptions": {
+    "watchFile": "priorityPollingInterval"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/__tests__/*", "**/*.spec.ts", "**/*.test.ts"]

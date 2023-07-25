@@ -1,33 +1,34 @@
-import {AuthorDocument} from '../../../db/models/author';
 import AuthorRepository from '../../../repository/author';
+
+import {AuthorDocument} from 'db/models/author';
 
 interface Context {
     authorRepository: AuthorRepository;
 }
 
 interface Args {
-    id: string;
+    name: string;
     input: AuthorDocument;
 }
 
 export default {
     Query: {
-        authors: async (parent: unknown, args: unknown, { authorRepository }: Context): Promise<AuthorDocument[]> => {
+        authors: async (parent: unknown, args: unknown, {authorRepository}: Context): Promise<AuthorDocument[]> => {
             return authorRepository.getAuthors();
         },
-        author: async (parent: unknown, { id }: Args, { authorRepository }: Context): Promise<AuthorDocument | null> => {
-            return authorRepository.getAuthor(id);
+        author: async (parent: unknown, {name}: Args, {authorRepository}: Context): Promise<AuthorDocument | null> => {
+            return authorRepository.getAuthorByName(name);
         },
     },
     Mutation: {
-        createAuthor: async (root: unknown, { input }: Args, { authorRepository }: Context): Promise<AuthorDocument> => {
+        createAuthor: async (root: unknown, {input}: Args, {authorRepository}: Context): Promise<AuthorDocument> => {
             return await authorRepository.insertAuthor(input);
         },
-        updateAuthor: async (root: unknown, { input }: Args, { authorRepository }: Context): Promise<AuthorDocument | null> => {
+        updateAuthor: async (root: unknown, {input}: Args, {authorRepository}: Context): Promise<AuthorDocument | null> => {
             return await authorRepository.updateAuthor(input);
         },
-        deleteAuthor: async (root: unknown, { id }: Args, { authorRepository }: Context): Promise<string> => {
-            return authorRepository.deleteAuthor(id);
+        deleteAuthor: async (root: unknown, {name}: Args, {authorRepository}: Context): Promise<string> => {
+            return authorRepository.deleteAuthor(name);
         },
     },
 };

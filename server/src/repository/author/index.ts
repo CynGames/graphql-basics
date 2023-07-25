@@ -5,8 +5,8 @@ export default class AuthorRepository {
         return AuthorModel.find({});
     }
 
-    async getAuthor(id: string): Promise<AuthorDocument | null> {
-        return AuthorModel.findById(id);
+    async getAuthorByName(name: string): Promise<AuthorDocument | null> {
+        return AuthorModel.findOne({ name: name });
     }
 
     async insertAuthor(authorData: { name: string, dateOfBirth?: number }): Promise<AuthorDocument> {
