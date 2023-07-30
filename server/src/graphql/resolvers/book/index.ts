@@ -1,43 +1,46 @@
-import BookRepository from '../../../repository/book';
-import AuthorRepository from "../../../repository/author";
-
 import {BookDocument} from 'db/models/book';
+import {Context} from "../../../types";
 
-interface Context {
-    bookRepository: BookRepository;
-    authorRepository: AuthorRepository;
-}
-
-interface BookData {
-    title: string;
-    input: BookDocument;
-}
+import handleErrors from "../../../utils";
+import {AllBooksQueryData, CreateBookInput, UpdateBookInput} from "dto";
 
 export default {
     Query: {
-        books: async (parent: unknown, args: unknown, {bookRepository}: Context): Promise<BookDocument[]> => {
-            return bookRepository.getBooks();
-        },
-        book: async (parent: unknown, {title}: BookDocument, {bookRepository}: Context): Promise<BookDocument | null> => {
-            return bookRepository.getBook(title);
-        },
+        books: handleErrors(async (root: unknown, {title, genres}: AllBooksQueryData, {bookService}: Context): Promise<BookDocument[] | null> => {
+            return await bookService.getBooks({title, genres});
+        }),
+        book: handleErrors(async (root: unknown, {title}: {title: string}, {bookService}: Context): Promise<BookDocument | null> => {
+            return await bookService.getBookByTitle(title);
+        }),
     },
     Mutation: {
-        createBook: async (root: unknown, bookData: BookData, {bookRepository}: Context): Promise<BookDocument> => {
-            return await bookRepository.createBook(bookData.input);
-        },
-        updateBook: async (root: unknown, bookData: BookData, {bookRepository}: Context): Promise<BookDocument | null> => {
-            return await bookRepository.updateBook(bookData.title, bookData.input);
-        },
-        deleteBook: async (root: unknown, {title}: BookDocument, {bookRepository}: Context): Promise<BookDocument | null> => {
-            return bookRepository.deleteBook(title);
-        },
+        createBook: handleErrors(async (root: unknown, {input}: {input: CreateBookInput}, {bookService, user}: Context): Promise<BookDocument | null> => {
+            if (!user) {
+                throw new Error('Unauthorized: Must be logged in to perform this action.');
+            }
+
+            return await bookService.createBook(input);
+        }),
+        updateBook: handleErrors(async (root: unknown, {title, input}: {title: string, input: UpdateBookInput}, {bookService, user}: Context): Promise<BookDocument | null> => {
+            if (!user) {
+                throw new Error('Unauthorized: Must be logged in to perform this action.');
+            }
+
+            return await bookService.updateBook(title, input);
+        }),
+        deleteBook: handleErrors(async (root: unknown, {title}: {title: string}, {bookService, user}: Context): Promise<BookDocument | null> => {
+            if (!user) {
+                throw new Error('Unauthorized: Must be logged in to perform this action.');
+            }
+
+            return await bookService.deleteBook(title);
+        }),
     },
     Book: {
-        author: async (book: BookDocument, args: unknown, {authorRepository}: Context) => {
+        author: async (book: BookDocument, args: unknown, {authorService}: Context) => {
 
             if (book.author) {
-                return authorRepository.getAuthorByName(book.author);
+                return await authorService.getAuthorByName(book.author);
             } else {
                 return null;
             }

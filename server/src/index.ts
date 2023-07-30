@@ -1,18 +1,18 @@
-import mongoose from 'mongoose';
 import { createExpressServer } from './server';
+
+import mongoose from 'mongoose';
+import config from "../src/config";
 
 require('dotenv').config();
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
 console.log('Connecting to MongoDB...');
 
-mongoose.connect(MONGODB_URI!)
+mongoose.connect(config.MONGODB_URI!)
     .then(() => {
         console.log('Connected to MongoDB');
 
         const server = createExpressServer();
-        const PORT = process.env.PORT || 4000;
+        const PORT = config.PORT || 4000;
 
         server.then(app => {
             app.listen(PORT, () => {

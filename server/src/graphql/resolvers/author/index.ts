@@ -1,34 +1,39 @@
-import AuthorRepository from '../../../repository/author';
-
 import {AuthorDocument} from 'db/models/author';
+import {Context} from "../../../types";
 
-interface Context {
-    authorRepository: AuthorRepository;
-}
-
-interface Args {
-    name: string;
-    input: AuthorDocument;
-}
+import handleErrors from "../../../utils";
+import {CreateAuthorInput, UpdateAuthorInput} from "dto";
 
 export default {
     Query: {
-        authors: async (parent: unknown, args: unknown, {authorRepository}: Context): Promise<AuthorDocument[]> => {
-            return authorRepository.getAuthors();
-        },
-        author: async (parent: unknown, {name}: Args, {authorRepository}: Context): Promise<AuthorDocument | null> => {
-            return authorRepository.getAuthorByName(name);
-        },
+        authors: handleErrors(async (root: unknown, args: unknown, {authorService}: Context): Promise<AuthorDocument[] | null> => {
+            return authorService.getAuthors();
+        }),
+        author: handleErrors(async (root: unknown, {name}: {name: string}, {authorService}: Context): Promise<AuthorDocument | null> => {
+            return authorService.getAuthorByName(name);
+        }),
     },
     Mutation: {
-        createAuthor: async (root: unknown, {input}: Args, {authorRepository}: Context): Promise<AuthorDocument> => {
-            return await authorRepository.insertAuthor(input);
-        },
-        updateAuthor: async (root: unknown, {input}: Args, {authorRepository}: Context): Promise<AuthorDocument | null> => {
-            return await authorRepository.updateAuthor(input);
-        },
-        deleteAuthor: async (root: unknown, {name}: Args, {authorRepository}: Context): Promise<string> => {
-            return authorRepository.deleteAuthor(name);
-        },
+        createAuthor: handleErrors(async (root: unknown, {input}: {input: CreateAuthorInput}, {authorService, user}: Context): Promise<AuthorDocument | null> => {
+            if (!user) {
+                throw new Error('Unauthorized: Must be logged in to perform this action.');
+            }
+
+            return await authorService.createAuthor(input);
+        }),
+        updateAuthor: handleErrors(async (root: unknown, {name, input}: {name: string, input: UpdateAuthorInput }, {authorService, user}: Context): Promise<AuthorDocument | null> => {
+            if (!user) {
+                throw new Error('Unauthorized: Must be logged in to perform this action.');
+            }
+
+            return await authorService.updateAuthor(name, input);
+        }),
+        deleteAuthor: handleErrors(async (root: unknown, {name}: {name: string}, {authorService, user}: Context): Promise<AuthorDocument | null> => {
+            if (!user) {
+                throw new Error('Unauthorized: Must be logged in to perform this action.');
+            }
+
+            return authorService.deleteAuthor(name);
+        }),
     },
 };

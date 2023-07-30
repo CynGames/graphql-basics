@@ -1,17 +1,13 @@
 export default `
     type Query {
-        authors: [Author]
-        author(name: String!): Author
+        authors: [Author]!
+        author(name: String!): Author!
     }
     
     type Mutation {
-        createAuthor(input: AuthorMutation): Author
-        updateAuthor(input: AuthorMutation): Author
-        deleteAuthor: String
-    }
-    
-    type Subscription {
-        newAuthor: Author!
+        createAuthor(input: AuthorMutation!): Author!
+        updateAuthor(name: String!, input: AuthorMutation): Author!
+        deleteAuthor(name: String!): Author!
     }
     
     type Author {
@@ -21,7 +17,6 @@ export default `
     }
     
     input AuthorMutation {
-        id: ID
         name: String!
         dateOfBirth: Int!
     }

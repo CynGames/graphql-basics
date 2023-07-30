@@ -1,21 +1,21 @@
 import BookModel, {BookDocument} from '../../db/models/book';
+import {BookQuery, CreateBookInput, UpdateBookInput} from "dto";
 
 export default class BookRepository {
-    async getBooks(): Promise<BookDocument[]> {
-        return BookModel.find({});
+    async getBooks(query: BookQuery): Promise<BookDocument[] | null> {
+        return BookModel.find(query);
     }
 
-    async getBook(title: string): Promise<BookDocument | null> {
+    async getBookByTitle(title: string): Promise<BookDocument | null> {
         return BookModel.findOne({title});
     }
 
-    async createBook(bookData: BookDocument): Promise<BookDocument> {
-        const book = new BookModel(bookData);
-        return await book.save();
+    async createBook(input: CreateBookInput): Promise<BookDocument | null> {
+        return new BookModel(input).save();
     }
 
-    async updateBook(title: string, bookData: BookDocument): Promise<BookDocument | null> {
-        return BookModel.findOneAndUpdate({title}, bookData, {new: true});
+    async updateBook(title: string, input: UpdateBookInput): Promise<BookDocument | null> {
+        return BookModel.findOneAndUpdate({title}, input, {new: true});
     }
 
     async deleteBook(title: string): Promise<BookDocument | null> {
