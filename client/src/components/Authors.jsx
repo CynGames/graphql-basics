@@ -1,69 +1,16 @@
-// import { useState } from 'react'
-// import { useQuery } from '@apollo/client'
-// import author from "./author";
-// import {FIND_AUTHOR} from "../queries/queries";
-//
-// const Authors = ({ authors }) => {
-//
-//     const [nameToSearch, setNameToSearch] = useState(null)
-//     const result = useQuery(FIND_AUTHOR, {
-//         variables: { nameToSearch },
-//         skip: !nameToSearch,
-//     })
-//
-//     if (nameToSearch && result.data) {
-//         return (
-//             <author
-//                 author={result.data.findAuthor}
-//                 onClose={() => setNameToSearch(null)}
-//             />
-//         )
-//     }
-//
-//     return (
-//         <div>
-//             <h2>Authors</h2>
-//             {authors.map((p) => (
-//                 <div key={p.name}>
-//                     {p.name}
-//
-//                     <button onClick={() => setNameToSearch(p.name)}>
-//                         Show Books
-//                     </button>
-//                 </div>
-//             ))}
-//         </div>
-//     )
-// }
-//
-// export default Authors
-
-// const author = ({ author, onClose }) => {
-//     return (
-//         <div>
-//             <h2>{author.name}</h2>
-//             <div>
-//                 {author.born}
-//             </div>
-//             <button onClick={onClose}>close</button>
-//         </div>
-//     )
-// }
-//
-// export default author
-
 import {useMutation, useQuery} from "@apollo/client";
-import {ALL_AUTHORS, EDIT_AUTHOR} from "../queries/queries";
 import {useState} from "react";
+
+import {GET_ALL_AUTHORS, GET_AUTHOR_BY_NAME, UPDATE_AUTHOR} from "../queries";
 
 const Authors = (props) => {
 
   const [name, setName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(0);
 
-  const [editAuthor] = useMutation(EDIT_AUTHOR);
+  const [editAuthor] = useMutation(UPDATE_AUTHOR);
 
-  const result = useQuery(ALL_AUTHORS, {
+  const result = useQuery(GET_ALL_AUTHORS, {
     pollInterval: 2000
   });
 
@@ -75,7 +22,7 @@ const Authors = (props) => {
     return <div>loading...</div>
   }
 
-  const authors = result.data.allAuthors;
+  const authors = result.data.authors;
 
 
   const submit = async (event) => {
@@ -109,7 +56,6 @@ const Authors = (props) => {
           <tr key={author.id}>
             <td>{author.name}</td>
             <td style={{textAlign: "center"}}>{author.dateOfBirth}</td>
-            <td style={{textAlign: "center"}}>{author.bookCount}</td>
           </tr>
         ))}
 

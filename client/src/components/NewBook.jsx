@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CREATE_BOOK } from "../queries/queries";
+import { CREATE_BOOK } from "../queries";
 import { useMutation } from "@apollo/client";
 
 const NewBook = (props) => {
