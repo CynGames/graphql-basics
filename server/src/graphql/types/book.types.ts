@@ -10,6 +10,10 @@ export default `
         deleteBook(title: String!): Book!
     }
     
+    type Subscription {
+        bookAdded: Book!
+    }
+    
     type Book {
         id: ID!
         title: String!

@@ -1,7 +1,7 @@
-import BookModel, {BookDocument} from '../../db/models/book';
+import {BookModel, BookDocument} from '../db/models';
 import {BookQuery, CreateBookInput, UpdateBookInput} from "dto";
 
-export default class BookRepository {
+export class BookRepository {
     async getBooks(query: BookQuery): Promise<BookDocument[] | null> {
         return BookModel.find(query);
     }

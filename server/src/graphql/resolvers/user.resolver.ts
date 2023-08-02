@@ -1,11 +1,11 @@
-import {UserDocument} from 'db/models/user';
+import {UserDocument} from '../../db/models';
 import {CreateUserInput, UpdateUserInput, LoginInput} from "dto";
-import {Context, Token} from "../../../types";
+import {Context, Token} from "../../types";
 
 import {UserInputError} from "apollo-server-express";
 
-import config from "../../../config";
-import handleErrors from "../../../utils";
+import config from "../../config";
+import handleErrors from "../../utils/errorHandler.hof";
 import jwt from "jsonwebtoken";
 
 export default {

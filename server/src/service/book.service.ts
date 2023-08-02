@@ -1,8 +1,8 @@
-import BookRepository from "../../repository/book";
-import {BookDocument} from "db/models/book";
+import {BookRepository} from "../repository";
+import {BookDocument} from "../db/models";
 import {AllBooksQueryData, CreateBookInput, UpdateBookInput} from "dto";
 
-class BookService {
+export class BookService {
     bookRepository: BookRepository;
 
     constructor(bookRepository: BookRepository) {
@@ -40,4 +40,3 @@ class BookService {
     }
 }
 
-export default BookService;

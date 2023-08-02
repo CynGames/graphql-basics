@@ -1,10 +1,16 @@
 {
   "scripts": {
+    "client-install": "cd client && npm install",
+    "server-setup": "cd server && docker-compose build",
     "client": "cd client && npm start",
     "server": "cd server && docker-compose up",
+    "postinstall": "npm run client-install && npm run server-setup",
     "start": "concurrently \"npm run server\" \"npm run client\""
   },
   "devDependencies": {
     "concurrently": "^8.2.0"
+  },
+  "dependencies": {
+    "graphql-subscriptions": "^2.0.0"
   }
 }

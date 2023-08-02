@@ -1,8 +1,8 @@
-import AuthorRepository from "../../repository/author";
-import {AuthorDocument} from "../../db/models/author";
+import {AuthorRepository} from "../repository";
+import {AuthorDocument} from "../db/models";
 import {CreateAuthorInput, UpdateAuthorInput} from "dto";
 
-class AuthorService {
+export class AuthorService {
     authorRepository: AuthorRepository;
 
     constructor(authorRepository: AuthorRepository) {
@@ -29,5 +29,3 @@ class AuthorService {
         return this.authorRepository.deleteAuthor(name);
     }
 }
-
-export default AuthorService;

@@ -1,8 +1,8 @@
-import {NextFunction} from "express";
 import jwt from 'jsonwebtoken';
-
 import config from "../config";
-import UserRepository from "../repository/user";
+
+import {NextFunction} from "express";
+import {UserRepository} from "repository";
 
 const authenticateToken = (userRepository: UserRepository) =>
     async (req: any, res: unknown, next: NextFunction) => {

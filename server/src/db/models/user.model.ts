@@ -8,7 +8,7 @@ export interface UserDocument extends Document {
     favoriteGenre: string;
 }
 
-const UserModel = new Schema<UserDocument>({
+const UserSchema = new Schema<UserDocument>({
     username: {
         type: String,
         required: true,
@@ -24,6 +24,6 @@ const UserModel = new Schema<UserDocument>({
     }
 });
 
-UserModel.plugin(uniqueValidator);
+UserSchema.plugin(uniqueValidator);
 
-export default mongoose.model<UserDocument>('User', UserModel);
+export const UserModel = mongoose.model<UserDocument>('User', UserSchema);

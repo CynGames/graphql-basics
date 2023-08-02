@@ -1,7 +1,7 @@
-import {AuthorDocument} from 'db/models/author';
-import {Context} from "../../../types";
+import {AuthorDocument} from '../../db/models';
+import {Context} from "../../types";
 
-import handleErrors from "../../../utils";
+import handleErrors from "../../utils/errorHandler.hof";
 import {CreateAuthorInput, UpdateAuthorInput} from "dto";
 
 export default {

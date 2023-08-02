@@ -1,8 +1,12 @@
-import {BookDocument} from 'db/models/book';
-import {Context} from "../../../types";
-
-import handleErrors from "../../../utils";
+import {BookDocument} from '../../db/models';
+import {Context} from "../../types";
 import {AllBooksQueryData, CreateBookInput, UpdateBookInput} from "dto";
+
+import handleErrors from "../../utils/errorHandler.hof";
+
+import {PubSub} from "graphql-subscriptions";
+
+const pubsub = new PubSub();
 
 export default {
     Query: {
@@ -18,6 +22,8 @@ export default {
             if (!user) {
                 throw new Error('Unauthorized: Must be logged in to perform this action.');
             }
+
+            pubsub.publish('BOOK_ADDED', {bookAdded: input});
 
             return await bookService.createBook(input);
         }),
@@ -44,6 +50,11 @@ export default {
             } else {
                 return null;
             }
+        }
+    },
+    Subscription: {
+        bookAdded: {
+            subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
         }
     }
 };

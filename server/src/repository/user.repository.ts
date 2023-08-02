@@ -1,7 +1,7 @@
-import UserModel, {UserDocument} from "../../db/models/user";
+import {UserModel, UserDocument} from "../db/models";
 import {CreateUserInput, UpdateUserInput} from "dto";
 
-export default class UserRepository {
+export class UserRepository {
     async getUsers(): Promise<UserDocument[] | null> {
         return UserModel.find({});
     }

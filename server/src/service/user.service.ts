@@ -1,11 +1,11 @@
-import config from "../../config";
+import config from "../config";
 import bcrypt from "bcryptjs";
-import UserRepository from "../../repository/user";
 
-import {UserDocument} from "db/models/user";
+import {UserRepository} from "../repository";
+import {UserDocument} from "../db/models";
 import {CreateUserInput, UpdateUserInput} from "dto";
 
-class UserService {
+export class UserService {
     userRepository: UserRepository;
 
     constructor(userRepository: UserRepository) {
@@ -52,5 +52,3 @@ class UserService {
         return await bcrypt.compare(password, hashedPassword);
     }
 }
-
-export default UserService;

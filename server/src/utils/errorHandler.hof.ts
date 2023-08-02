@@ -1,6 +1,7 @@
 import { UserInputError } from "apollo-server-express";
 import { JsonWebTokenError } from 'jsonwebtoken';
 import { IFieldResolver } from "@graphql-tools/utils";
+
 import { Context } from "../types";
 
 type ResolverFn = IFieldResolver<any, Context, any>;

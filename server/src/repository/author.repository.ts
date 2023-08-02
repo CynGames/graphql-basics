@@ -1,7 +1,7 @@
-import AuthorModel, {AuthorDocument} from '../../db/models/author';
+import {AuthorModel, AuthorDocument} from '../db/models';
 import {CreateAuthorInput, UpdateAuthorInput} from "dto";
 
-export default class AuthorRepository {
+export class AuthorRepository {
     async getAuthors(): Promise<AuthorDocument[] | null> {
         return AuthorModel.find({});
     }

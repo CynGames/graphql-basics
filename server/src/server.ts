@@ -1,20 +1,30 @@
-import express, {Express} from 'express';
-import {ApolloServer} from 'apollo-server-express';
+import {ApolloServer} from '@apollo/server';
+import {expressMiddleware} from '@apollo/server/express4';
+import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
 
-import BookRepository from "./repository/book";
-import AuthorRepository from "./repository/author";
-import UserRepository from "./repository/user";
-
-import UserService from "./service/user";
-import AuthorService from "./service/author";
-import BookService from "./service/book";
-
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 import schema from './graphql';
-import authenticateToken from "./middleware/auth";
+import authenticateToken from './middleware/auth.middleware';
+
+import {BookRepository, AuthorRepository, UserRepository} from './repository';
+import {UserService, AuthorService, BookService} from './service';
+
+import {WebSocketServer} from "ws";
+import {useServer} from "graphql-ws/lib/use/ws";
 
 
-export async function createExpressServer(): Promise<Express> {
+
+// Cual es el rule de thumb para los types?
+export async function createExpressServer() {
     const app = express();
+    const httpServer = http.createServer(app);
+    const wsServer = new WebSocketServer({
+        server: httpServer,
+        path: '/',
+    })
 
     const bookRepository = new BookRepository();
     const authorRepository = new AuthorRepository();
@@ -24,32 +34,44 @@ export async function createExpressServer(): Promise<Express> {
     const authorService = new AuthorService(authorRepository);
     const userService = new UserService(userRepository);
 
-    // Maybe later split the repos and the services into separate objects
     const contextObject = {
-        bookRepository,
-        authorRepository,
-        userRepository,
         bookService,
         authorService,
         userService
     };
 
-    app.use(authenticateToken(userRepository));
-
+    const serverCleanup = useServer({schema}, wsServer)
     const server = new ApolloServer({
         schema,
-        context: async ( {req}: any ) => {
-            const user = req.user;
-
-            return {
-                ...contextObject,
-                user
-            }
-        }
+        plugins: [ApolloServerPluginDrainHttpServer({httpServer}),
+            {
+                async serverWillStart() {
+                    return {
+                        async drainServer() {
+                            await serverCleanup.dispose()
+                        }
+                    }
+                }
+            }],
     });
 
     await server.start();
-    server.applyMiddleware({ app });
+
+    app.use('/',
+        cors<cors.CorsRequest>(),
+        bodyParser.json(),
+        authenticateToken(userRepository),
+        expressMiddleware(server, {
+            context: async ({req}: any) => {
+                const user = req.user;
+
+                return {
+                    ...contextObject,
+                    user
+                }
+            },
+        }),
+    );
 
     return app;
 }
