@@ -1,30 +1,37 @@
 import { gql } from '@apollo/client';
 
+export const USER_DETAILS = gql`
+    fragment UserDetails on User {
+        username
+        favoriteGenre
+    }
+`
+
 export const GET_ALL_USERS = gql`
     query {
         users {
-            username
-            favoriteGenre
+            ...UserDetails
         }
     }
+    ${USER_DETAILS}
 `
 
 export const GET_USER_BY_NAME = gql`
     query User($username: String!){
         user (username: $username) {
-            username
-            favoriteGenre
+            ...UserDetails
         }
     }
+    ${USER_DETAILS}
 `
 
 export const CREATE_USER = gql`
     mutation CreateUser($input: UserMutation!) {
         createUser(input: $input) {
-            username
-            favoriteGenre
+            ...UserDetails
         }
     }
+    ${USER_DETAILS}
 `
 
 export const LOGIN = gql`
@@ -38,19 +45,19 @@ export const LOGIN = gql`
 export const UPDATE_USER = gql`
     mutation UpdateUser($username: String!, $input: UserMutation!) {
         updateUser(username: $username, input: $input) {
-            username
-            favoriteGenre
+            ...UserDetails
             id
         }
     }
+    ${USER_DETAILS}
 `
 
 export const DELETE_USER = gql`
     mutation DeleteUser($username: String!) {
         deleteUser(username: $username) {
-            username
-            favoriteGenre
+            ...UserDetails
             id
         }
     }
+    ${USER_DETAILS}
 `

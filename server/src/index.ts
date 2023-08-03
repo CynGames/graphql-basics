@@ -24,4 +24,4 @@ mongoose.connect(config.MONGODB_URI!)
         console.log('Error connecting to MongoDB:', error.message);
     });
 
-mongoose.set('debug', true);
+// mongoose.set('debug', true);
